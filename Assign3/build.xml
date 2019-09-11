@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="Ser321 Basic Rmi Example">
+
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+
+	<!-- set global properties for this build -->
+	<property name="src" value="src" />
+	<property name="build" value="classes" />
+	<property name="lib" value="lib" />
+	<property name="hostId" value="localhost" />
+	<property name="regPort" value="1099" />
+
+	<path id="Assign3.classpath">
+		<pathelement location="bin" />
+	</path>
+
+	<!-- classpath  -->
+	<path id="compile.classpath">
+		<pathelement location="${build}" />
+	</path>
+
+	<!-- checks the OS  -->
+	<target name="checkos">
+		<condition property="os" value="windows">
+			<os family="windows" />
+		</condition>
+		<condition property="os" value="unix">
+			<os family="unix" />
+		</condition>
+		<condition property="os" value="mac">
+			<os family="mac" />
+		</condition>
+	</target>
+	<target name="targets" depends="checkos">
+		<echo message="targets are clean, prepare, compile, server, client" />
+		<echo message="java home is: ${java.home}" />
+		<echo message="os family is: ${os}" />
+		<echo>start server with: ant server -DhostId=192.168.2.2 -DregPort=2222</echo>
+		<echo>start client with: ant client -DhostId=192.168.2.2 -DregPort=2222 </echo>
+	</target>
+
+	<!-- default launch  -->
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Delete the ${build} directory tree -->
+	<target name="clean">
+		<delete dir="bin" />
+		<delete dir="${build}" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target depends="build-subprojects,build-project" name="build" />
+
+
+	<!-- default build  -->
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<classpath refid="Assign3.classpath" />
+		</javac>
+	</target>
+	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
+	
+	<!-- Time stamp & make build dir  -->
+	<target name="prepare">
+	      <!-- Create the time stamp -->
+	      <tstamp/>
+	      <!-- Create the build directory structure used by compile -->
+	      <echo message="home defined as: ${home}" />
+	      <mkdir dir="${build}" />
+	   </target>
+	
+	<!-- Compiles  -->
+	<target name="compile" depends="prepare"
+	           description="Compile Java sources">
+	      <javac srcdir="${src}"
+	             includeantruntime="false"
+	             destdir="${build}">
+	         <classpath refid="compile.classpath"/>
+	      </javac>
+	<!--      <rmic classname="personnel.EmpServerImpl" base="${build}">
+	             <classpath refid="compile.classpath"/>
+	          </rmic> -->
+	   </target>
+	
+	<!-- Network and Server  -->
+	<target name="client" depends="compile"
+	           description="Start client">
+	         <echo message="user.dir is: ${user.dir}"/>
+	         <echo message="command line client: java -cp classes -Djava.security.policy=policyClient RMIClient ${hostId} ${regPort}" />
+	         <java classname="RMIClientGui" fork="yes">
+	           <classpath refid="compile.classpath"/>
+	<!--           <sysproperty key="java.security.policy" value="policyClient"/> -->
+	           <arg value="${hostId}"/> 
+	           <arg value="${regPort}"/>
+	         </java>
+	   </target>
+	
+	<!-- Network and Server  --> 
+	<target name="server" depends="compile"
+	           description="Using parallel task, start server and client">
+	     <parallel>
+	       <exec dir="${basedir}"
+	             executable="rmiregistry">
+	         <arg value="${regPort}"/>
+	         <env key="CLASSPATH" path="${basedir}/${build}"/>
+	       </exec>
+	       <sequential>
+	         <sleep seconds="10"/>
+	         <java classname="personnel.EmpServerImpl" fork="yes">
+	<!--           <sysproperty key="java.security.policy" value="policyServer"/> -->
+	           <sysproperty key="java.rmi.server.hostname" value="${hostId}"/>
+	           <arg value="${hostId}"/> 
+	           <arg value="${regPort}"/> 
+	           <classpath refid="compile.classpath"/>
+	         </java>
+	       </sequential>
+	     </parallel>
+	   </target>
+	
+</project>
