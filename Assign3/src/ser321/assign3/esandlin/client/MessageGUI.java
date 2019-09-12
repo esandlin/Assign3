@@ -1,5 +1,8 @@
 package ser321.assign3.esandlin.client;
 
+package helloworld;
+
+
 /**
  * Copyright (c) 2015 Tim Lindquist,
  * Software Engineering,
@@ -42,8 +45,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 import java.awt.Font;
+import java.awt.MenuBar;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.BorderLayout;
 
 public class MessageGUI extends JFrame implements java.io.Serializable {
 
@@ -52,6 +57,11 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -5258674991466487784L;
 
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu file = new JMenu("File"); 
+	private JMenu help = new JMenu("Help");
+	private JMenuItem getMail = new JMenu ("get mail");
+	
 	private JLabel lblMessagesForEric = new JLabel("Messages for Eric Sandlin:");
 	private JTextField subjectTextField = new JTextField(10);
 	private JLabel subjectLabel = new JLabel("Subject:");
@@ -68,16 +78,27 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 	private JTextField fromTextField = new JTextField(10);
 	private JTextField messageTextField = new JTextField();
 	private JTextField statusTextField = new JTextField();
-	JTree messageTree = new JTree();
+	private JTree messageTree = new JTree();
+	private final JMenuBar menuBar_1 = new JMenuBar();
+	private final JMenu fileMenu = new JMenu("File");
+	private final JMenu helpMenu = new JMenu("Help");
+	private final JMenuItem getMailMenuItem = new JMenuItem("Get Mail");
+	
 
 	MessageGUI() {
-
-		// Sets up the view and adds the components
+		
 		JPanel Panel = new JPanel();
-
+		
 		this.setTitle("Eric Sandlins Message");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(613, 336);
+		getContentPane().add(menuBar_1, BorderLayout.NORTH);
+		
+		menuBar_1.add(fileMenu);
+		
+		fileMenu.add(getMailMenuItem);
+		
+		menuBar_1.add(helpMenu);
 		Panel.setLayout(null);
 		subjectTextField.setBounds(275, 93, 116, 22);
 		Panel.add(subjectTextField);
@@ -116,8 +137,8 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 		lblMessagesForEric.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblMessagesForEric.setBounds(12, 47, 156, 16);
 		Panel.add(lblMessagesForEric);
-		
-		messageTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Messages") {
+			
+		getMessageTree().setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Messages") {
 			/**
 			 * Json serial for packet x-fer
 			 */
@@ -127,26 +148,30 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 				DefaultMutableTreeNode node_1;
 				node_1 = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 22:54 1894");
 				node_1.add(new DefaultMutableTreeNode("Get your homework done."));
-				add(node_1);
+				getContentPane().add(node_1);
 				node_1 = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 22:54 1999");
 				node_1.add(new DefaultMutableTreeNode("Don't forget to study."));
-				add(node_1);
+				getContentPane().add(node_1);
 				node_1 = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 21:24 2012");
 				node_1.add(new DefaultMutableTreeNode("Work Work Work Work Work."));
-				add(node_1);
+				getContentPane().add(node_1);
 				node_1 = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 20:50 2015");
 				node_1.add(new DefaultMutableTreeNode("I can do this, yes I can."));
-				add(node_1);
+				getContentPane().add(node_1);
 				node_1 = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 01:14 2019");
 				node_1.add(new DefaultMutableTreeNode("Maybe I need help."));
-				add(node_1);
+				getContentPane().add(node_1);
 			}
 		}));
-		messageTree.setBounds(12, 76, 170, 188);
-		Panel.add(messageTree);
+		getMessageTree().setBounds(12, 76, 170, 188);
+		Panel.add(getMessageTree());
 		
 		getContentPane().add(Panel);
 		// End of setting up the components --------
+	}
+
+	public void setMenuBar(JMenuBar menuBar) {
+		this.menuBar = menuBar;
 	}
 
 	/**
@@ -273,5 +298,13 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 
 		JOptionPane.showMessageDialog(this, errorMessage);
 
+	}
+
+	public JTree getMessageTree() {
+		return messageTree;
+	}
+
+	public void setMessageTree(JTree messageTree) {
+		this.messageTree = messageTree;
 	}
 }
