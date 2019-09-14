@@ -44,9 +44,14 @@ import javax.swing.*;
 import java.awt.Font;
 import java.awt.MenuBar;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.BorderLayout;
 
+/**
+ * @author ericsandlin
+ *
+ */
 public class MessageGUI extends JFrame implements java.io.Serializable {
 
 	/**
@@ -55,9 +60,9 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 	private static final long serialVersionUID = -5258674991466487784L;
 
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenu file = new JMenu("File"); 
+	private JMenu file = new JMenu("File");
 	private JMenu help = new JMenu("Help");
-	private JMenuItem getMail = new JMenu ("get mail");
+	private JMenuItem getMail = new JMenu("get mail");
 	private JLabel lblMessagesForEric = new JLabel("Messages for Eric Sandlin:");
 	private JTextField subjectTextField = new JTextField(10);
 	private JLabel subjectLabel = new JLabel("Subject:");
@@ -78,19 +83,23 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 	private final JMenu fileMenu = new JMenu("File");
 	private final JMenu helpMenu = new JMenu("Help");
 	private final JMenuItem getMailMenuItem = new JMenuItem("Get Mail");
-	
-	protected JTree messageTree = new JTree();
-	
-	
+
+	DefaultMutableTreeNode parentNode;
+	DefaultMutableTreeNode node;
+	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+	DefaultTreeModel model = new DefaultTreeModel(root);
+	JTree tree = new JTree(model);
+	JScrollPane scrollPane = new JScrollPane(tree);
+
 	MessageGUI() {
-		
+
 		JPanel Panel = new JPanel();
-		
+
 		this.setTitle("Eric Sandlins Message");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(613, 336);
 		getContentPane().add(menuBar_1, BorderLayout.NORTH);
-		
+
 		menuBar_1.add(fileMenu);
 		fileMenu.add(getMailMenuItem);
 		menuBar_1.add(helpMenu);
@@ -108,7 +117,7 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 		fromLabel.setBounds(403, 47, 35, 16);
 		Panel.add(fromLabel);
 		dateLabel.setBounds(403, 96, 35, 16);
-		Panel.add(dateLabel);	
+		Panel.add(dateLabel);
 		messageTextField.setBounds(194, 127, 325, 81);
 		Panel.add(messageTextField);
 		messageTextField.setColumns(10);
@@ -130,18 +139,75 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 		statusTextField.setBounds(293, 231, 226, 33);
 		Panel.add(statusTextField);
 		lblMessagesForEric.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMessagesForEric.setBounds(12, 47, 156, 16);
+		lblMessagesForEric.setBounds(12, 47, 181, 16);
 		Panel.add(lblMessagesForEric);
-		
-		
-		getMessageTree().setBounds(12, 76, 170, 188);
-		Panel.add(getMessageTree());
-		
+
+		parentNode = (DefaultMutableTreeNode) model.getRoot();
+		node = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 22:54 1894");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("Maybe I need help.");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = (DefaultMutableTreeNode) model.getRoot();
+		node = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 22:54 1999");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("Get your homework done.");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = (DefaultMutableTreeNode) model.getRoot();
+		node = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 22:54 1894");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("Don't forget to study.");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = (DefaultMutableTreeNode) model.getRoot();
+		node = new DefaultMutableTreeNode("Eric Sandlin: Mon 16 Sept 21:24 2012");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("I can do this, yes I can.");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("I'm starting to get this class");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		parentNode = node;
+		node = new DefaultMutableTreeNode("I can do this, yes I can.");
+		addNodeToDefaultTreeModel(model, parentNode, node);
+
+		tree.setRootVisible(false);
+		tree.setBounds(12, 67, 170, 219);
+		Panel.add(tree);
+
 		getContentPane().add(Panel);
 		// End of setting up the components --------
 	}
 
-	
+	/**
+	 * @param treeModel
+	 * @param parentNode
+	 * @param node
+	 */
+	private static void addNodeToDefaultTreeModel(DefaultTreeModel treeModel, DefaultMutableTreeNode parentNode,
+			DefaultMutableTreeNode node) {
+
+		treeModel.insertNodeInto(node, parentNode, parentNode.getChildCount());
+
+		if (parentNode == treeModel.getRoot()) {
+			treeModel.nodeStructureChanged((TreeNode) treeModel.getRoot());
+		}
+	}
+
+	/**
+	 * @param menuBar
+	 */
 	public void setMenuBar(JMenuBar menuBar) {
 		this.menuBar = menuBar;
 	}
@@ -232,51 +298,46 @@ public class MessageGUI extends JFrame implements java.io.Serializable {
 		this.statusTextField = statusTextField;
 	}
 
-	/*
-	 * If the calculateButton is clicked execute a method in the Controller
-	 * named actionPerformed
+	/**
+	 * If the calculateButton is clicked execute a method in the Controller named
+	 * actionPerformed
 	 */
 	void addReplyListener(ActionListener listenForReplyButton) {
 		replyButton.addActionListener(listenForReplyButton);
 	}
-	
-	/*
-	 * If the calculateButton is clicked execute a method in the Controller
-	 * named actionPerformed
+
+	/**
+	 * If the calculateButton is clicked execute a method in the Controller named
+	 * actionPerformed
 	 */
 	void addDeleteListener(ActionListener listenForDeleteButton) {
 		deleteButton.addActionListener(listenForDeleteButton);
 	}
-	
-	/*
-	 * If the calculateButton is clicked execute a method in the Controller
-	 * named actionPerformed
+
+	/**
+	 * If the calculateButton is clicked execute a method in the Controller named
+	 * actionPerformed
 	 */
 	void addSendListener(ActionListener listenForSendButton) {
 		sendButton.addActionListener(listenForSendButton);
 	}
-	
-	/*
-	 * If the calculateButton is clicked execute a method in the Controller
-	 * named actionPerformed
+
+	/**
+	 * If the calculateButton is clicked execute a method in the Controller named
+	 * actionPerformed
 	 */
 	void addCypherListener(ActionListener listenForCypherButton) {
 		cypherButton.addActionListener(listenForCypherButton);
 	}
 
-	// Open a popup that contains the error message passed
-
+	/**
+	 * Open a popup that contains the error message passed
+	 * 
+	 * @param errorMessage
+	 */
 	void displayErrorMessage(String errorMessage) {
 
 		JOptionPane.showMessageDialog(this, errorMessage);
 
 	}
-
-	public JTree getMessageTree() {
-		return messageTree;
-	}
-
-//	public void setMessageTree(JTree messageTree) {
-//		this.messageTree = messageTree;
-//	}
 }
