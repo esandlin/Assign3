@@ -9,6 +9,8 @@ import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+
+
 /**
  * Copyright (c) 2015 Tim Lindquist, Software Engineering, Arizona State
  * University at the Polytechnic campus
@@ -63,8 +65,15 @@ public class Client {
 		this.theView.addReplyListener(new Listener());
 	}
 
+	/**
+	 * @author ericsandlin
+	 * listener class
+	 *
+	 */
 	class Listener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			
+			
 			JTextField to, from, subject, date;
 
 			/*
@@ -134,7 +143,7 @@ public class Client {
 	}
 }
 
-class MVC {
+class Main {
 	public static void main(String[] args) {
 		
 			try {
